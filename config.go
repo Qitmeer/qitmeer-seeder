@@ -1,7 +1,3 @@
-// Copyright (c) 2018 The Decred developers
-// Use of this source code is governed by an ISC
-// license that can be found in the LICENSE file.
-
 package main
 
 import (
@@ -22,7 +18,6 @@ const (
 var (
 	// Default network parameters
 	activeNetParams = &params.TestNetParams
-	//defaultHomeDir    = dcrutil.AppDataDir("dcrseeder", false)
 	//get current path
 	defaultHomeDir, _ = os.Getwd()
 	// Default configuration options
