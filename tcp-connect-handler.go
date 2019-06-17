@@ -10,8 +10,7 @@ import (
 	"strings"
 )
 
-func (d *DNSServer) handleConnection(rrStr string, authority dns.RR, conn net.Conn, ) {
-	buffer := make([]byte, 512)
+func (d *DNSServer) handleConnection(rrStr string, authority dns.RR, conn net.Conn, buffer []byte) {
 
 	n, err := conn.Read(buffer[0:])
 
