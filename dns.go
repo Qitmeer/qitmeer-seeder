@@ -31,39 +31,54 @@ func (d *DNSServer) Start() {
 		return
 	}
 
-	udpAddr, err := net.ResolveUDPAddr("udp4", d.listen)
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", d.listen)
 	if err != nil {
-		log.Printf("ResolveUDPAddr: %v", err)
+		log.Printf("ResolveTCPAddr: %v", err)
 		return
 	}
 
-	udpListen, err := net.ListenUDP("udp", udpAddr)
+	tcpListener, err := net.ListenTCP("tcp", tcpAddr)
 	if err != nil {
-		log.Printf("ListenUDP: %v", err)
+		log.Printf("ListenTCP: %v", err)
 		return
 	}
 	//noinspection GoUnhandledErrorResult
-	defer udpListen.Close()
+	defer tcpListener.Close()
 
 	for {
-		b := make([]byte, 512)
-		_, addr, err := udpListen.ReadFromUDP(b)
+		conn, err := tcpListener.Accept()
+
 		if err != nil {
-			log.Printf("Read: %v", err)
+			log.Printf("Accept: %v", err)
 			continue
 		}
 
 		go func() {
+			buffer := make([]byte, 512)
+
+			n, err := conn.Read(buffer[0:])
+
+			if err != nil {
+				log.Printf("Read: %v", err)
+				return
+			}
+
+			tcpAddr := conn.RemoteAddr()
+			fmt.Println("Receive from client", tcpAddr.String(), string(buffer[0:n]))
+
+			//noinspection GoUnhandledErrorResult
+			defer conn.Close()
+
 			dnsMsg := new(dns.Msg)
-			err = dnsMsg.Unpack(b[:])
+			err = dnsMsg.Unpack(buffer[:])
 			if err != nil {
 				log.Printf("%s: invalid dns message: %v",
-					addr, err)
+					tcpAddr, err)
 				return
 			}
 			if len(dnsMsg.Question) != 1 {
 				log.Printf("%s sent more than 1 question: %d",
-					addr, len(dnsMsg.Question))
+					tcpAddr, len(dnsMsg.Question))
 				return
 			}
 			domainName := strings.ToLower(dnsMsg.Question[0].Name)
@@ -80,7 +95,7 @@ func (d *DNSServer) Start() {
 				wantedSFStr := labels[0][1:]
 				u, err := strconv.ParseUint(wantedSFStr, 10, 64)
 				if err != nil {
-					log.Printf("%s: ParseUint: %v", addr, err)
+					log.Printf("%s: ParseUint: %v", tcpAddr, err)
 					return
 				}
 				wantedSF = protocol.ServiceFlag(u)
@@ -96,12 +111,12 @@ func (d *DNSServer) Start() {
 			case dns.TypeNS:
 				atype = "NS"
 			default:
-				log.Printf("%s: invalid qtype: %d", addr,
+				log.Printf("%s: invalid qtype: %d", tcpAddr,
 					dnsMsg.Question[0].Qtype)
 				return
 			}
 
-			log.Printf("%s: query %d for %v", addr,
+			log.Printf("%s: query %d for %v", tcpAddr,
 				dnsMsg.Question[0].Qtype, wantedSF)
 
 			respMsg := dnsMsg.Copy()
@@ -118,7 +133,7 @@ func (d *DNSServer) Start() {
 					newRR, err := dns.NewRR(rr)
 					if err != nil {
 						log.Printf("%s: NewRR: %v",
-							addr, err)
+							tcpAddr, err)
 						return
 					}
 
@@ -130,7 +145,7 @@ func (d *DNSServer) Start() {
 					dnsMsg.Question[0].Name, d.nameserver)
 				newRR, err := dns.NewRR(rr)
 				if err != nil {
-					log.Printf("%s: NewRR: %v", addr, err)
+					log.Printf("%s: NewRR: %v", tcpAddr, err)
 					return
 				}
 
@@ -141,17 +156,18 @@ func (d *DNSServer) Start() {
 			sendBytes, err := respMsg.Pack()
 			if err != nil {
 				log.Printf("%s: failed to pack response: %v",
-					addr, err)
+					tcpAddr, err)
 				return
 			}
 
-			_, err = udpListen.WriteToUDP(sendBytes, addr)
+			_, err = conn.Write(sendBytes)
 			if err != nil {
 				log.Printf("%s: failed to write response: %v",
-					addr, err)
+					tcpAddr, err)
 				return
 			}
 		}()
+
 	}
 }
 

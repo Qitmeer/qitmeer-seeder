@@ -21,7 +21,7 @@ const (
 
 var (
 	// Default network parameters
-	activeNetParams = &params.MainNetParams
+	activeNetParams = &params.TestNetParams
 	//defaultHomeDir    = dcrutil.AppDataDir("dcrseeder", false)
 	//get current path
 	defaultHomeDir, _ = os.Getwd()
