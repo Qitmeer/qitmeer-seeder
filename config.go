@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/jessevdk/go-flags"
+	"log"
 	"net"
 	"os"
 	"path/filepath"
@@ -11,20 +12,15 @@ import (
 )
 
 const (
-	defaultConfigFilename = "hlc-seeder.conf"
-	defaultListenPort     = "18130"
+	defaultListenPort = "18130"
 )
 
 var (
 	// Default network parameters
-	activeNetParams = &params.TestNetParams
+	activeNetParams = &params.MainNetParams
 	//get current path
 	defaultHomeDir, _ = os.Getwd()
-	// Default configuration options
-	defaultConfigFile = filepath.Join(defaultHomeDir, defaultConfigFilename)
 )
-
-// config defines the configuration options for hardforkdemo.
 
 // See loadConfig for details on the configuration load process.
 type config struct {
@@ -74,20 +70,8 @@ func loadConfig() (*config, error) {
 
 	appName := filepath.Base(os.Args[0])
 	appName = strings.TrimSuffix(appName, filepath.Ext(appName))
-	usageMessage := fmt.Sprintf("Use %s -h to show usage", appName)
-
 	// Load additional config from file.
 	parser := flags.NewParser(&cfg, flags.Default)
-	err = flags.NewIniParser(parser).ParseFile(defaultConfigFile)
-	if err != nil {
-		if _, ok := err.(*os.PathError); !ok {
-			_, _ = fmt.Fprintf(os.Stderr, "Error parsing config "+
-				"file: %v\n", err)
-			_, _ = fmt.Fprintln(os.Stderr, usageMessage)
-			return nil, err
-		}
-	}
-
 	// Parse command line options again to ensure they take precedence.
 	_, err = parser.Parse()
 	if err != nil {
@@ -130,7 +114,8 @@ func loadConfig() (*config, error) {
 // normalizeAddress returns addr with the passed default port appended if
 // there is not already a port specified.
 func normalizeAddress(addr, defaultPort string) string {
-	_, _, err := net.SplitHostPort(addr)
+	host, port, err := net.SplitHostPort(addr)
+	log.Println(host, port)
 	if err != nil {
 		return net.JoinHostPort(addr, defaultPort)
 	}
