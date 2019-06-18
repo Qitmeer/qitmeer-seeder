@@ -20,7 +20,7 @@ func (d *DNSServer) handleConnection(rrStr string, authority dns.RR, conn net.Co
 	}
 
 	tcpAddr := conn.RemoteAddr()
-	log.Printf("Receive from client: %s %v", tcpAddr.String(), string(buffer[0:n]))
+	log.Printf("Receive from client: %s %v", tcpAddr.String(), buffer[0:n])
 	//noinspection GoUnhandledErrorResult
 	defer conn.Close()
 
