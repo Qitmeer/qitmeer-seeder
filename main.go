@@ -32,7 +32,7 @@ func main() {
 	go creep()
 
 	dnsServer := NewDNSServer(cfg.Host, cfg.Nameserver, cfg.Listen)
-	go dnsServer.Start()
+	go dnsServer.StartTCP()
 
 	wg.Wait()
 }
