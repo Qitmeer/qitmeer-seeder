@@ -99,7 +99,7 @@ func (d *DNSServer) StartTCP() {
 
 			if qtype != dns.TypeNS {
 				respMsg.Ns = append(respMsg.Ns, authority)
-				ips := amgr.GoodAddresses(qtype, wantedSF)
+				ips := manager.GoodAddresses(qtype, wantedSF)
 				for _, ip := range ips {
 					rr = fmt.Sprintf("%s 30 IN %s %s",
 						dnsMsg.Question[0].Name, atype,

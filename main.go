@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net"
 	"os"
 	"path/filepath"
@@ -9,29 +9,32 @@ import (
 )
 
 var (
-	amgr *Manager
-	wg   sync.WaitGroup
+	manager *Manager
+	wg      sync.WaitGroup
 )
 
 func main() {
 	cfg, err := loadConfig()
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "loadConfig: %v\n", err)
-		os.Exit(1)
-	}
-	amgr, err = NewManager(filepath.Join(defaultHomeDir,
-		activeNetParams.Name))
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "NewManager: %v\n", err)
+		log.Println(err.Error())
 		os.Exit(1)
 	}
 
-	amgr.AddAddresses([]net.IP{net.ParseIP(cfg.Seeder)})
+	manager, err = NewManager(filepath.Join(defaultHomeDir, activeNetParams.Name))
+
+	if err != nil {
+		log.Println(err.Error())
+		os.Exit(1)
+	}
+
+	manager.AddAddresses([]net.IP{net.ParseIP(cfg.Seeder)})
 
 	wg.Add(1)
+
 	go creep()
 
 	dnsServer := NewDNSServer(cfg.Host, cfg.Nameserver, cfg.Listen)
+
 	go dnsServer.StartTCP()
 
 	wg.Wait()

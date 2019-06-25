@@ -25,8 +25,8 @@ func creep() {
 	onaddr := make(chan struct{})
 	verack := make(chan struct{})
 	config := peer.Config{
-		UserAgentName:    "nox",
-		UserAgentVersion: "0.0.1",
+		UserAgentName:    "hlc-seeder",
+		UserAgentVersion: "0.0.2",
 		ChainParams:      activeNetParams,
 		DisableRelayTx:   true,
 
@@ -36,7 +36,7 @@ func creep() {
 				for _, addr := range msg.AddrList {
 					n = append(n, addr.IP)
 				}
-				added := amgr.AddAddresses(n)
+				added := manager.AddAddresses(n)
 				log.Printf("Peer %v sent %v addresses, %d new",
 					p.Addr(), len(msg.AddrList), added)
 				onaddr <- struct{}{}
@@ -52,7 +52,7 @@ func creep() {
 
 	var wg sync.WaitGroup
 	for {
-		ips := amgr.Addresses()
+		ips := manager.Addresses()
 		if len(ips) == 0 {
 			log.Printf("No stale addresses -- sleeping for %v",
 				defaultAddressTimeout)
@@ -74,7 +74,7 @@ func creep() {
 						host, err)
 					return
 				}
-				amgr.Attempt(ip)
+				manager.Attempt(ip)
 				conn, err := net.DialTimeout("tcp", p.Addr(),
 					defaultNodeTimeout)
 				if err != nil {
@@ -87,7 +87,7 @@ func creep() {
 				select {
 				case <-verack:
 					// Mark this peer as a good node.
-					amgr.Good(p.NA().IP, p.Services())
+					manager.Good(p.NA().IP, p.Services())
 
 					// Ask peer for some addresses.
 					p.QueueMessage(message.NewMsgGetAddr(), nil)

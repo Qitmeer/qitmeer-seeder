@@ -115,33 +115,33 @@ func NewManager(dataDir string) (*Manager, error) {
 		return nil, err
 	}
 
-	amgr := Manager{
+	manager := Manager{
 		nodes:     make(map[string]*Node),
 		peersFile: filepath.Join(dataDir, peersFilename),
 		quit:      make(chan struct{}),
 	}
 
-	err = amgr.deserializePeers()
+	err = manager.deserializePeers()
 	if err != nil {
-		log.Printf("Failed to parse file %s: %v", amgr.peersFile, err)
+		log.Printf("Failed to parse file %s: %v", manager.peersFile, err)
 		// if it is invalid we nuke the old one unconditionally.
-		err = os.Remove(amgr.peersFile)
+		err = os.Remove(manager.peersFile)
 		if err != nil {
 			log.Printf("Failed to remove corrupt peers file %s: %v",
-				amgr.peersFile, err)
+				manager.peersFile, err)
 		}
 	}
 
-	go amgr.addressHandler()
+	go manager.addressHandler()
 
-	return &amgr, nil
+	return &manager, nil
 }
 
-func (m *Manager) AddAddresses(addrs []net.IP) int {
+func (m *Manager) AddAddresses(addresses []net.IP) int {
 	var count int
 
 	m.mtx.Lock()
-	for _, addr := range addrs {
+	for _, addr := range addresses {
 		if !isRoutable(addr) {
 			continue
 		}

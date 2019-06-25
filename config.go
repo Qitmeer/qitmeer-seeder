@@ -17,7 +17,7 @@ const (
 
 var (
 	// Default network parameters
-	activeNetParams = &params.MainNetParams
+	activeNetParams = &params.TestNetParams
 	//get current path
 	defaultHomeDir, _ = os.Getwd()
 )
@@ -52,7 +52,6 @@ func loadConfig() (*config, error) {
 
 	// Default config.
 	cfg := config{
-		//Listen: normalizeAddress("localhost", defaultListenPort),
 		Listen: normalizeAddress("0.0.0.0", defaultListenPort),
 	}
 
