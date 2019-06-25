@@ -1,7 +1,13 @@
 # hlc-seeder
 The seeder of the Qitmeer network
 
-*Please edit qitmeer project path in go.mod just like:*
-```bash
-replace qitmeer => /Users/fulingjie/workspace/hlc/qitmeer
+## Usage
+```zsh
+./start.sh
+```
+
+*Build Linux*
+```zsh
+./build-linux.sh
+./start.sh
 ```
