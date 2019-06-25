@@ -45,9 +45,7 @@ func (dnsServer *DNSServer) Start() {
 			continue
 		}
 
-		buffer := make([]byte, 1024)
-
-		go dnsServer.handleConnection(rrStr, authority, conn, buffer)
+		go dnsServer.handleConnection(rrStr, authority, conn)
 	}
 }
 

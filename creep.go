@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/HalalChain/qitmeer/core/message"
+	"github.com/HalalChain/qitmeer/p2p/peer"
 	"log"
 	"net"
-	"qitmeer/core/message"
-	"qitmeer/p2p/peer"
 	"sync"
 	"time"
 )

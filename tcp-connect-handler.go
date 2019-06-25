@@ -2,15 +2,17 @@ package main
 
 import (
 	"fmt"
+	"github.com/HalalChain/qitmeer/core/protocol"
 	"github.com/miekg/dns"
 	"log"
 	"net"
-	"qitmeer/core/protocol"
 	"strconv"
 	"strings"
 )
 
-func (d *DNSServer) handleConnection(rrStr string, authority dns.RR, conn net.Conn, buffer []byte) {
+func (dnsServer *DNSServer) handleConnection(rrStr string, authority dns.RR, conn net.Conn) {
+
+	buffer := make([]byte, 512)
 
 	n, err := conn.Read(buffer[0:])
 
@@ -37,14 +39,14 @@ func (d *DNSServer) handleConnection(rrStr string, authority dns.RR, conn net.Co
 		return
 	}
 	domainName := strings.ToLower(dnsMsg.Question[0].Name)
-	ff := strings.LastIndex(domainName, d.hostname)
+	ff := strings.LastIndex(domainName, dnsServer.hostname)
 	if ff < 0 {
 		log.Printf("invalid name: %s",
 			dnsMsg.Question[0].Name)
 		return
 	}
 
-	wantedSF := protocol.SFNodeNetwork
+	wantedSF := protocol.Full
 	labels := dns.SplitDomainName(domainName)
 	if labels[0][0] == 'x' && len(labels[0]) > 1 {
 		wantedSFStr := labels[0][1:]
@@ -97,7 +99,7 @@ func (d *DNSServer) handleConnection(rrStr string, authority dns.RR, conn net.Co
 		}
 	} else {
 		rrStr = fmt.Sprintf("%s 86400 IN NS %s",
-			dnsMsg.Question[0].Name, d.nameserver)
+			dnsMsg.Question[0].Name, dnsServer.nameserver)
 		newRR, err := dns.NewRR(rrStr)
 		if err != nil {
 			log.Printf("%s: NewRR: %v", tcpAddr, err)

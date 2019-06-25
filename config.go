@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/HalalChain/qitmeer/params"
 	"github.com/jessevdk/go-flags"
 	"log"
 	"net"
 	"os"
 	"path/filepath"
-	"qitmeer/params"
 	"strings"
 )
 
