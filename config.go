@@ -112,7 +112,7 @@ func loadConfig() (*config, error) {
 }
 
 // normalizeAddress returns addr with the passed default port appended if
-// there is not already a port specified.
+// there is not already a port specified.11
 func normalizeAddress(addr, defaultPort string) string {
 	host, port, err := net.SplitHostPort(addr)
 	log.Println(host, port)
