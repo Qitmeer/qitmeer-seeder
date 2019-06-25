@@ -1,4 +1,4 @@
-module hlc-seeder
+module github.com/HalalChain/hlc-seeder
 
 go 1.12
 
