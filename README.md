@@ -2,12 +2,19 @@
 The seeder of the Qitmeer network
 
 ## Usage
+
+modify config.go 
+
 ```zsh
-./start.sh
+~ go build
+~ ./hlc-seeder
 ```
 
 *Build Linux*
+
+modify config.go 
+
 ```zsh
 ./build-linux.sh
-./start.sh
+./hlc-seeder
 ```

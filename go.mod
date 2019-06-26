@@ -4,7 +4,6 @@ go 1.12
 
 require (
 	github.com/HalalChain/qitmeer v0.0.0-20190624095632-7a8ee99a27c2
-	github.com/jessevdk/go-flags v1.4.0
 	github.com/miekg/dns v1.1.14
 	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4 // indirect
 	golang.org/x/exp v0.0.0-20190510132918-efd6b22b2522 // indirect

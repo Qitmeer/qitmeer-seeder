@@ -16,14 +16,13 @@ var (
 func main() {
 	cfg, err := loadConfig()
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("loadConfig : ", err.Error())
 		os.Exit(1)
 	}
 
 	manager, err = NewManager(filepath.Join(defaultHomeDir, activeNetParams.Name))
-
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("NewManager : ", err.Error())
 		os.Exit(1)
 	}
 
@@ -33,7 +32,7 @@ func main() {
 
 	go creep()
 
-	dnsServer := NewDNSServer(cfg.Host, cfg.Nameserver, cfg.Listen)
+	dnsServer := NewDNSServer(cfg.Host, cfg.NameServer, cfg.Listen)
 
 	go dnsServer.StartTCP()
 
