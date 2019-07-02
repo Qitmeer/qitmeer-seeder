@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/HalalChain/qitmeer/core/protocol"
+	"github.com/HalalChain/qitmeer-lib/core/protocol"
 	"log"
 	"net"
 	"os"
@@ -115,33 +115,33 @@ func NewManager(dataDir string) (*Manager, error) {
 		return nil, err
 	}
 
-	manager := Manager{
+	amgr := Manager{
 		nodes:     make(map[string]*Node),
 		peersFile: filepath.Join(dataDir, peersFilename),
 		quit:      make(chan struct{}),
 	}
 
-	err = manager.deserializePeers()
+	err = amgr.deserializePeers()
 	if err != nil {
-		log.Printf("Failed to parse file %s: %v", manager.peersFile, err)
+		log.Printf("Failed to parse file %s: %v", amgr.peersFile, err)
 		// if it is invalid we nuke the old one unconditionally.
-		err = os.Remove(manager.peersFile)
+		err = os.Remove(amgr.peersFile)
 		if err != nil {
 			log.Printf("Failed to remove corrupt peers file %s: %v",
-				manager.peersFile, err)
+				amgr.peersFile, err)
 		}
 	}
 
-	go manager.addressHandler()
+	go amgr.addressHandler()
 
-	return &manager, nil
+	return &amgr, nil
 }
 
-func (m *Manager) AddAddresses(addresses []net.IP) int {
+func (m *Manager) AddAddresses(addrs []net.IP) int {
 	var count int
 
 	m.mtx.Lock()
-	for _, addr := range addresses {
+	for _, addr := range addrs {
 		if !isRoutable(addr) {
 			continue
 		}

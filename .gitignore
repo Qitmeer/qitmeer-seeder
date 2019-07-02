@@ -1,4 +1,5 @@
 hlc-seeder
-go.sum
+vendor
 .idea
-.Ds_Store
+.DS_Store
+.go.sum

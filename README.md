@@ -16,5 +16,5 @@ modify config.go
 
 ```zsh
 ./build-linux.sh
-./hlc-seeder
+./hlc-seeder --testnet -H seed.example.com -n xps.example.com -s ip
 ```
