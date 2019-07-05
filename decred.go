@@ -1,14 +1,16 @@
 package main
 
 import (
-	"github.com/HalalChain/qitmeer-lib/core/message"
-	"github.com/HalalChain/qitmeer/p2p/peer"
 	"log"
 	"net"
 	"os"
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/HalalChain/qitmeer-lib/core/dag"
+	"github.com/HalalChain/qitmeer-lib/core/message"
+	"github.com/HalalChain/qitmeer/p2p/peer"
 )
 
 const (
@@ -31,11 +33,21 @@ func creep() {
 
 	onaddr := make(chan struct{})
 	verack := make(chan struct{})
+
+	NewestGSFunc := func() (gs *dag.GraphState, err error) {
+		gs = dag.NewGraphState()
+		gs.GetTips().Add(activeNetParams.GenesisHash)
+		gs.SetTotal(1)
+		return
+	}
+
 	config := peer.Config{
 		UserAgentName:    "hlc-seeder",
 		UserAgentVersion: "0.0.2",
 		ChainParams:      activeNetParams,
 		DisableRelayTx:   true,
+
+		NewestGS: NewestGSFunc,
 
 		Listeners: peer.MessageListeners{
 			OnAddr: func(p *peer.Peer, msg *message.MsgAddr) {
