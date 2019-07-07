@@ -13,15 +13,15 @@ modify config.go
 *Build Linux*
 
 ```zsh
-./build-linux.sh
+~ ./build-linux.sh
 ```
 
 ```zsh
-./hlc-seeder --testnet -H seed.example.com -n xps.example.com -s ip
+~ ./hlc-seeder --testnet -H seed.example.com -n xps.example.com -s ip
 ```
 
 ```zsh
-dig -t NS seed.fulingjie.com
+~ dig -t NS seed.fulingjie.com
 ```
 
 ```zsh
@@ -44,7 +44,7 @@ seed.fulingjie.com.	1	IN	NS	xps.fulingjie.com.
 ```
 
 ```zsh
-dig seed.fulingjie.com
+~ dig seed.fulingjie.com
 ```
 
 ```zsh

@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
+	"github.com/miekg/dns"
 	"log"
 	"net"
 	"strconv"
 	"strings"
-
-	"github.com/miekg/dns"
 )
 
 type DNSServer struct {
@@ -18,7 +17,7 @@ type DNSServer struct {
 }
 
 func (d *DNSServer) Start() {
-	defer wg.Done()
+	defer globalWg.Done()
 
 	rr := fmt.Sprintf("%s 86400 IN NS %s", d.hostname, d.nameserver)
 	authority, err := dns.NewRR(rr)
@@ -106,7 +105,7 @@ func (d *DNSServer) Start() {
 
 			if qtype != dns.TypeNS {
 				respMsg.Ns = append(respMsg.Ns, authority)
-				ips := amgr.GoodAddresses(qtype, wantedSF)
+				ips := manager.GoodAddresses(qtype, wantedSF)
 				for _, ip := range ips {
 					rr = fmt.Sprintf("%s 30 IN %s %s",
 						dnsMsg.Question[0].Name, atype,
@@ -131,6 +130,10 @@ func (d *DNSServer) Start() {
 				}
 
 				respMsg.Answer = append(respMsg.Answer, newRR)
+			}
+
+			for _, vvv := range respMsg.Answer {
+				fmt.Println("respMsg", vvv.String())
 			}
 
 			//done:

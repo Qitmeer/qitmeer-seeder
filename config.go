@@ -28,10 +28,10 @@ var (
 // See loadConfig for details on the configuration load process.
 type config struct {
 	Host       string `short:"H" long:"host" description:"Seed DNS address"`
-	Listen     string `long:"listen" short:"l" description:"Listen on address:port"`
+	Listen     string `short:"l" long:"listen"  description:"Listen on address:port"`
 	Nameserver string `short:"n" long:"nameserver" description:"hostname of nameserver"`
 	Seeder     string `short:"s" long:"default seeder" description:"IP address of a  working node"`
-	TestNet    bool   `long:"testnet" description:"Use testnet"`
+	TestNet    bool   `short:"t" long:"testnet" description:"Use testnet"`
 }
 
 func loadConfig() (*config, error) {

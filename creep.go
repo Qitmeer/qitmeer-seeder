@@ -1,35 +1,17 @@
 package main
 
 import (
-	"log"
-	"net"
-	"os"
-	"path/filepath"
-	"sync"
-	"time"
-
 	"github.com/HalalChain/qitmeer-lib/core/dag"
 	"github.com/HalalChain/qitmeer-lib/core/message"
 	"github.com/HalalChain/qitmeer/p2p/peer"
-)
-
-const (
-	// defaultAddressTimeout defines the duration to wait
-	// for new addresses.
-	defaultAddressTimeout = time.Minute * 10
-
-	// defaultNodeTimeout defines the timeout time waiting for
-	// a response from a node.
-	defaultNodeTimeout = time.Second * 3
-)
-
-var (
-	amgr *Manager
-	wg   sync.WaitGroup
+	"log"
+	"net"
+	"sync"
+	"time"
 )
 
 func creep() {
-	defer wg.Done()
+	defer globalWg.Done()
 
 	onaddr := make(chan struct{})
 	verack := make(chan struct{})
@@ -55,7 +37,7 @@ func creep() {
 				for _, addr := range msg.AddrList {
 					n = append(n, addr.IP)
 				}
-				added := amgr.AddAddresses(n)
+				added := manager.AddAddresses(n)
 				log.Printf("Peer %v sent %v addresses, %d new",
 					p.Addr(), len(msg.AddrList), added)
 				onaddr <- struct{}{}
@@ -71,7 +53,7 @@ func creep() {
 
 	var wg sync.WaitGroup
 	for {
-		ips := amgr.Addresses()
+		ips := manager.Addresses()
 		if len(ips) == 0 {
 			log.Printf("No stale addresses -- sleeping for %v",
 				defaultAddressTimeout)
@@ -93,7 +75,7 @@ func creep() {
 						host, err)
 					return
 				}
-				amgr.Attempt(ip)
+				manager.Attempt(ip)
 				conn, err := net.DialTimeout("tcp", p.Addr(),
 					defaultNodeTimeout)
 				if err != nil {
@@ -106,7 +88,7 @@ func creep() {
 				select {
 				case <-verack:
 					// Mark this peer as a good node.
-					amgr.Good(p.NA().IP, p.Services())
+					manager.Good(p.NA().IP, p.Services())
 
 					// Ask peer for some addresses.
 					p.QueueMessage(message.NewMsgGetAddr(), nil)
@@ -131,28 +113,4 @@ func creep() {
 		}
 		wg.Wait()
 	}
-}
-
-func main() {
-	cfg, err := loadConfig()
-	if err != nil {
-		log.Println(err.Error())
-		os.Exit(1)
-	}
-	amgr, err = NewManager(filepath.Join(defaultHomeDir,
-		activeNetParams.Name))
-	if err != nil {
-		log.Println(err.Error())
-		os.Exit(1)
-	}
-
-	amgr.AddAddresses([]net.IP{net.ParseIP(cfg.Seeder)})
-
-	wg.Add(1)
-	go creep()
-
-	dnsServer := NewDNSServer(cfg.Host, cfg.Nameserver, cfg.Listen)
-	go dnsServer.Start()
-
-	wg.Wait()
 }
