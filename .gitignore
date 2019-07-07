@@ -2,4 +2,4 @@ hlc-seeder
 vendor
 .idea
 .DS_Store
-.go.sum
+go.sum
