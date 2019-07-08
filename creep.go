@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/HalalChain/qitmeer-lib/core/dag"
 	"github.com/HalalChain/qitmeer-lib/core/message"
+	"github.com/HalalChain/qitmeer-lib/core/protocol"
 	"github.com/HalalChain/qitmeer/p2p/peer"
 	"log"
 	"net"
@@ -16,39 +17,46 @@ func creep() {
 	onaddr := make(chan struct{})
 	verack := make(chan struct{})
 
-	NewestGSFunc := func() (gs *dag.GraphState, err error) {
+	newestGSFunc := func() (gs *dag.GraphState, err error) {
 		gs = dag.NewGraphState()
 		gs.GetTips().Add(activeNetParams.GenesisHash)
 		gs.SetTotal(1)
-		return
+		return gs, err
 	}
 
-	config := peer.Config{
-		UserAgentName:    "hlc-seeder",
-		UserAgentVersion: "0.0.2",
-		ChainParams:      activeNetParams,
-		DisableRelayTx:   true,
+	onAddrFunc := func(p *peer.Peer, msg *message.MsgAddr) {
+		n := make([]net.IP, 0, len(msg.AddrList))
+		for _, addr := range msg.AddrList {
+			n = append(n, addr.IP)
+		}
+		added := manager.AddAddresses(n)
+		log.Printf("Peer %v sent %v addresses, %d new",
+			p.Addr(), len(msg.AddrList), added)
+		onaddr <- struct{}{}
+	}
 
-		NewestGS: NewestGSFunc,
+	onVerAckFunc := func(p *peer.Peer, msg *message.MsgVerAck) {
+		log.Printf("Adding peer %v with services %v",
+			p.NA().IP.String(), p.Services())
 
-		Listeners: peer.MessageListeners{
-			OnAddr: func(p *peer.Peer, msg *message.MsgAddr) {
-				n := make([]net.IP, 0, len(msg.AddrList))
-				for _, addr := range msg.AddrList {
-					n = append(n, addr.IP)
-				}
-				added := manager.AddAddresses(n)
-				log.Printf("Peer %v sent %v addresses, %d new",
-					p.Addr(), len(msg.AddrList), added)
-				onaddr <- struct{}{}
-			},
-			OnVerAck: func(p *peer.Peer, msg *message.MsgVerAck) {
-				log.Printf("Adding peer %v with services %v",
-					p.NA().IP.String(), p.Services())
+		verack <- struct{}{}
+	}
 
-				verack <- struct{}{}
-			},
-		},
+	messageListener := peer.MessageListeners{
+		OnAddr:   onAddrFunc,
+		OnVerAck: onVerAckFunc,
+	}
+
+	peerConfig := peer.Config{
+		NewestGS:          newestGSFunc,
+		UserAgentName:     "hlc-seeder",
+		UserAgentVersion:  "0.0.2",
+		UserAgentComments: []string{"hlc", "qitmeer", "seeder"},
+		ChainParams:       activeNetParams,
+		DisableRelayTx:    true,
+		Services:          protocol.Full,
+		ProtocolVersion:   protocol.ProtocolVersion,
+		Listeners:         messageListener,
 	}
 
 	var wg sync.WaitGroup
@@ -69,7 +77,7 @@ func creep() {
 
 				host := net.JoinHostPort(ip.String(),
 					activeNetParams.DefaultPort)
-				p, err := peer.NewOutboundPeer(&config, host)
+				p, err := peer.NewOutboundPeer(&peerConfig, host)
 				if err != nil {
 					log.Printf("NewOutboundPeer on %v: %v",
 						host, err)

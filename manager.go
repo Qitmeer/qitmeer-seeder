@@ -280,7 +280,8 @@ func (m *Manager) prunePeers() {
 
 	//debug
 	if len(m.nodes) < 5 {
-		log.Printf("Pruned return: len(m.nodes) < 5")
+		log.Println("Pruned return: len(m.nodes) < 5", len(m.nodes))
+		log.Println(m.nodes)
 		return
 	}
 
