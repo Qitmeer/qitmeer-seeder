@@ -12,7 +12,6 @@ import (
 
 const (
 	defaultListenPort = "18130"
-	defaultSeed       = "seed.fulingjie.com"
 )
 
 var (
@@ -97,16 +96,19 @@ func loadConfig() (*config, error) {
 
 	if cfg.TestNet {
 		activeNetParams = &params.TestNetParams
-		activeNetParams.DNSSeeds = []params.DNSSeed{
-			{defaultSeed, true},
-			{defaultSeed, true},
-			{defaultSeed, true},
-		}
+		activeNetParams.Name = "testnet"
 		activeNetParams.Net = protocol.TestNet
-		activeNetParams.DefaultPort = defaultListenPort
+		activeNetParams.DefaultPort = "18130"
+		//seed := "seed1.hlcseeder.xyz"
+		seed:="seed.fulingjie.com"
+		activeNetParams.DNSSeeds = []params.DNSSeed{
+			{seed, true},
+			{seed, true},
+			{seed, true},
+		}
 	}
 
-	return &cfg, nil
+	return &cfg, err
 }
 
 // normalizeAddress returns addr with the passed default port appended if

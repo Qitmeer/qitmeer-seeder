@@ -50,7 +50,7 @@ func creep() {
 	peerConfig := peer.Config{
 		NewestGS:          newestGSFunc,
 		UserAgentName:     "hlc-seeder",
-		UserAgentVersion:  "0.0.2",
+		UserAgentVersion:  "0.3.0",
 		UserAgentComments: []string{"hlc", "qitmeer", "seeder"},
 		ChainParams:       activeNetParams,
 		DisableRelayTx:    true,
