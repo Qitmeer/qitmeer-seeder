@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
 	"github.com/HalalChain/qitmeer-lib/params"
 	"github.com/jessevdk/go-flags"
 	"log"
@@ -35,7 +34,7 @@ type config struct {
 
 func loadConfig() (*config, error) {
 
-	log.SetPrefix("hlc-seeder")
+	log.SetPrefix("qitmeer-seeder")
 	log.SetFlags(log.Lshortfile | log.Ldate)
 
 	err := os.MkdirAll(defaultHomeDir, os.ModePerm)
@@ -96,16 +95,6 @@ func loadConfig() (*config, error) {
 
 	if cfg.TestNet {
 		activeNetParams = &params.TestNetParams
-		activeNetParams.Name = "testnet"
-		activeNetParams.Net = protocol.TestNet
-		activeNetParams.DefaultPort = "18130"
-		//seed := "seed1.hlcseeder.xyz"
-		seed:="seed.fulingjie.com"
-		activeNetParams.DNSSeeds = []params.DNSSeed{
-			{seed, true},
-			{seed, true},
-			{seed, true},
-		}
 	}
 
 	return &cfg, err
