@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
 	"github.com/HalalChain/qitmeer-lib/params"
 	"github.com/jessevdk/go-flags"
 	"log"
@@ -12,7 +10,6 @@ import (
 
 const (
 	defaultListenPort = "18130"
-	defaultSeed       = "seed.fulingjie.com"
 )
 
 var (
@@ -23,20 +20,17 @@ var (
 	defaultHomeDir, _ = os.Getwd()
 )
 
-// config defines the configuration options for hardforkdemo.
-//
-// See loadConfig for details on the configuration load process.
 type config struct {
 	Host       string `short:"H" long:"host" description:"Seed DNS address"`
-	Listen     string `long:"listen" short:"l" description:"Listen on address:port"`
+	Listen     string `short:"l" long:"listen"  description:"Listen on address:port"`
 	Nameserver string `short:"n" long:"nameserver" description:"hostname of nameserver"`
 	Seeder     string `short:"s" long:"default seeder" description:"IP address of a  working node"`
-	TestNet    bool   `long:"testnet" description:"Use testnet"`
+	TestNet    bool   `short:"t" long:"testnet" description:"Use testnet"`
 }
 
 func loadConfig() (*config, error) {
 
-	log.SetPrefix("hlc-seeder")
+	log.SetPrefix("qitmeer-seeder")
 	log.SetFlags(log.Lshortfile | log.Ldate)
 
 	err := os.MkdirAll(defaultHomeDir, os.ModePerm)
@@ -49,18 +43,6 @@ func loadConfig() (*config, error) {
 		Listen: normalizeAddress("0.0.0.0", defaultListenPort),
 	}
 
-	preCfg := cfg
-	preParser := flags.NewParser(&preCfg, flags.Default)
-	_, err = preParser.Parse()
-	if err != nil {
-		e, ok := err.(*flags.Error)
-		if ok && e.Type == flags.ErrHelp {
-			os.Exit(0)
-		}
-		preParser.WriteHelp(os.Stderr)
-		return nil, err
-	}
-	// Load additional config from file.
 	parser := flags.NewParser(&cfg, flags.Default)
 
 	// Parse command line options again to ensure they take precedence.
@@ -74,39 +56,26 @@ func loadConfig() (*config, error) {
 
 	if len(cfg.Host) == 0 {
 		str := "Please specify a hostname"
-		err := fmt.Errorf(str)
-		_, _ = fmt.Fprintln(os.Stderr, err)
-		return nil, err
+		log.Fatalln(str)
 	}
 
 	if len(cfg.Nameserver) == 0 {
 		str := "Please specify a nameserver"
-		err := fmt.Errorf(str)
-		_, _ = fmt.Fprintln(os.Stderr, err)
-		return nil, err
+		log.Fatalln(str)
 	}
 
 	if len(cfg.Seeder) == 0 {
 		str := "Please specify a seeder"
-		err := fmt.Errorf(str)
-		_, _ = fmt.Fprintln(os.Stderr, err)
-		return nil, err
+		log.Fatalln(str)
 	}
 
 	cfg.Listen = normalizeAddress(cfg.Listen, defaultListenPort)
 
 	if cfg.TestNet {
 		activeNetParams = &params.TestNetParams
-		activeNetParams.DNSSeeds = []params.DNSSeed{
-			{defaultSeed, true},
-			{defaultSeed, true},
-			{defaultSeed, true},
-		}
-		activeNetParams.Net = protocol.TestNet
-		activeNetParams.DefaultPort = defaultListenPort
 	}
 
-	return &cfg, nil
+	return &cfg, err
 }
 
 // normalizeAddress returns addr with the passed default port appended if

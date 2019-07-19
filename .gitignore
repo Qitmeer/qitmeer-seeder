@@ -1,5 +1,5 @@
-hlc-seeder
+qitmeer-seeder
 vendor
-.idea
+go.sum
 .DS_Store
-.go.sum
+.idea

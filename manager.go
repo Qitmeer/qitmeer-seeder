@@ -4,14 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
+	"github.com/miekg/dns"
 	"log"
 	"net"
 	"os"
 	"path/filepath"
 	"sync"
 	"time"
-
-	"github.com/miekg/dns"
 )
 
 type Node struct {
@@ -212,7 +211,12 @@ func (m *Manager) GoodAddresses(qtype uint16, services protocol.ServiceFlag) []n
 
 		if node.LastSuccess.IsZero() ||
 			now.Sub(node.LastSuccess) > defaultStaleTimeout {
-			continue
+
+			//test
+			if len(m.nodes) > 5 {
+				continue
+			}
+
 		}
 
 		// Does the node have the requested services?
@@ -272,6 +276,15 @@ func (m *Manager) prunePeers() {
 	var count int
 	now := time.Now()
 	m.mtx.Lock()
+	defer m.mtx.Unlock()
+
+	//debug
+	if len(m.nodes) < 5 {
+		log.Println("Pruned return: len(m.nodes) < 5", len(m.nodes))
+		log.Println(m.nodes)
+		return
+	}
+
 	for k, node := range m.nodes {
 		if now.Sub(node.LastSeen) > pruneExpireTimeout {
 			delete(m.nodes, k)
@@ -286,7 +299,7 @@ func (m *Manager) prunePeers() {
 		}
 	}
 	l := len(m.nodes)
-	m.mtx.Unlock()
+	//m.mtx.Unlock()
 
 	log.Printf("Pruned %d addresses: %d remaining", count, l)
 }
