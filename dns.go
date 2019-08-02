@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
-	"github.com/miekg/dns"
 	"log"
 	"net"
 	"strconv"
 	"strings"
+
+	"github.com/miekg/dns"
+
+	"github.com/HalalChain/qitmeer-lib/core/protocol"
 )
 
 type DNSServer struct {
