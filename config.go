@@ -1,24 +1,22 @@
 package main
 
 import (
-	"github.com/HalalChain/qitmeer-lib/params"
-	"github.com/jessevdk/go-flags"
 	"log"
 	"net"
 	"os"
+
+	"github.com/jessevdk/go-flags"
+
+	"github.com/HalalChain/qitmeer-lib/params"
 )
 
-const (
-	defaultListenPort = "18130"
-)
+var defaultListenPort = params.MainNetParams.DefaultPort //"18130"
 
-var (
-	// Default network parameters
-	activeNetParams = &params.TestNetParams
+// Default network parameters
+var activeNetParams = &params.MainNetParams
 
-	// Default configuration options
-	defaultHomeDir, _ = os.Getwd()
-)
+// Default configuration options
+var defaultHomeDir, _ = os.Getwd()
 
 type config struct {
 	Host       string `short:"H" long:"host" description:"Seed DNS address"`
@@ -73,6 +71,7 @@ func loadConfig() (*config, error) {
 
 	if cfg.TestNet {
 		activeNetParams = &params.TestNetParams
+		defaultListenPort = params.TestNetParams.DefaultPort
 	}
 
 	return &cfg, err

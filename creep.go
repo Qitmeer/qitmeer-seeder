@@ -1,14 +1,15 @@
 package main
 
 import (
-	"github.com/HalalChain/qitmeer-lib/core/dag"
-	"github.com/HalalChain/qitmeer-lib/core/message"
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
-	"github.com/HalalChain/qitmeer/p2p/peer"
 	"log"
 	"net"
 	"sync"
 	"time"
+
+	"github.com/HalalChain/qitmeer-lib/core/dag"
+	"github.com/HalalChain/qitmeer-lib/core/message"
+	"github.com/HalalChain/qitmeer-lib/core/protocol"
+	"github.com/HalalChain/qitmeer/p2p/peer"
 )
 
 func creep() {
