@@ -56,16 +56,15 @@ vim start-qitmeer.sh
 
 net="--testnet"
 mining="--miningaddr TmRqga4jcJsKDYTZDSgQfWvQb9oK6HzVgxY"
-debug="-d trace --printorigin"
-rpc="--rpclisten 0.0.0.0:1234 --rpcuser test --rpcpass test"
+debug="-d trace"
+rpc="--rpclisten 0.0.0.0:1234 --rpcuser test --rpcpass test --rpcmaxclients=2000"
 path="-b "$(pwd)
 index="--txindex"
-listen="0.0.0.0:18130"
-rpcmaxclients="2000"
-debuglevel="debug"
-rpcmaxclients="10000000"
+debuglevel="--debuglevel debug"
+getaddrpercent="--getaddrpercent=100"
 
-./qitmeer ${net} ${mining} ${debug} ${rpc} ${path} ${index} ${listen} ${rpcmaxclients} ${debuglevel} ${rpcmaxclients} "$@"
+./qitmeer  ${net} ${mining} ${debug} ${rpc} ${path} ${index} ${debuglevel} ${getaddrpercent}"$@"
+
 ```
 Start the first node on server
 
