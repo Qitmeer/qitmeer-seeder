@@ -3,8 +3,8 @@ module github.com/HalalChain/qitmeer-seeder
 go 1.12
 
 require (
-	github.com/HalalChain/qitmeer v0.0.0-20190731141906-88aaab10e1be
-	github.com/HalalChain/qitmeer-lib v0.0.0-20190731141422-52abd17f2811
+	github.com/HalalChain/qitmeer v0.0.0-20190805103329-5a02144b42fe
+	github.com/HalalChain/qitmeer-lib v0.0.0-20190805102226-698b2bcbc3aa
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/miekg/dns v1.1.15
 )
