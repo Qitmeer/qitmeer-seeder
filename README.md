@@ -1,55 +1,50 @@
 # qitmeer-seeder
 
-The seeder of the Qitmeer network
+The seeder of the Qitmeer 
 
 ## Usage
 
+### build qitmeer-seeder
+
 ```bash
 git clone https://github.com/apefuu/qitmeer-seeder.git
-```
-### Build qitmeer-seeder
-
-```bash
 cd qitmeer-seeder
-go get -u -x
-go mod tidy
 go build
 ```
 
-### Build Linux
+### build qitmeer
 
-```bash
-./build-linux.sh
+see [qitmeer](https://github.com/HalalChain/qitmeer)
+
+## config seed domain
+
+You must have 2 domain names
+```
+# example
+seed.example.xxx  # DNS type namesever(ns) to ns.examplex.xxx
+ns.examplex.xxx   # DNS type A to your seed server ip
 ```
 
-### Start qitmeer-seeder
+## start qitmeer
+
+if the network peers count less than 5,you should add start parameter “--getaddrpercent=100” to you qitmeer 
+
+The qitmeer start parameter,see [qitmeer readme](https://github.com/HalalChain/qitmeer)
+
+The qitmeer p2p port must use default port (mainnet 830,testnet 1830,seed qitmmer help)
+
+
+## start qitmeer-seeder
+
+deafult dns server port 53,so your should config your seeder firewall and open udp port 53
 
 ```bash
-./qitmeer-seeder --testnet -H seed.example.com -n example.com -s nodeip
-```
-or modify the start-seeder.sh and
-```bash
-./start-seeder.sh
+# example
+./qitmeer-seeder --testnet -H seed.example.xxx -n example.xxx -l 0.0.0.0:53 -s your-qitmeer-ip
 ```
 
-### Build Qitmeer
+## example: qitmeer start bash
 
-```bash
-git clone https://github.com/HalalChain/qitmeer.git
-```
-
-```bash
-cd qitmeer
-go get -u -x
-go mod tidy
-go build
-```
-
-### Create start script
-
-```bash
-vim start-qitmeer.sh
-```
 
 ```bash
 #!/usr/bin/env bash
@@ -66,62 +61,55 @@ getaddrpercent="--getaddrpercent=100"
 ./qitmeer  ${net} ${mining} ${debug} ${rpc} ${path} ${index} ${debuglevel} ${getaddrpercent}"$@"
 
 ```
-Start the first node on server
+ 
+## test
+
+### test seed domain 
 
 ```bash
-chmod 755 start-qitmeer.sh
-./start-qitmeer.sh
-```
 
-*note : you can delete testnet folder and restart qitmeer-seeder*
+# if your seed domian is seed.example.xxx
+# if your ns domain is ns.example.xxx
+# "dig -t ns" will list ns.exaple.xxx
 
-Then you can see sync blocks,and then you can use
-
-```bash
-dig -t NS seed.example.com
+dig -t ns seed.example.xxx
 ```
 
 ```zsh
-; <<>> DiG 9.14.3 <<>> -t NS seed.example.com
+; <<>> DiG 9.14.3 <<>> -t NS seed.example.xxx
 ;; global options: +cmd
 ;; Got answer:
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 13277
 ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
 
 ;; QUESTION SECTION:
-;seed.example.com.		IN	NS
+;seed.example.xxx.		IN	NS
 
 ;; ANSWER SECTION:
-seed.example.com.	1	IN	NS	xps.example.com.
-
-;; Query time: 10 msec
-;; SERVER: 192.168.31.1#53(192.168.31.1)
-;; WHEN: 二  7 02 20:14:01 CST 2019
-;; MSG SIZE  rcvd: 54
+seed.example.xxx.	1	IN	NS	ns.example.xxx.
 ```
 
+### test your seed 
+
 ```bash
-dig seed.example.com
+# "dig" wil list all ips 
+dig seed.example.xxx
 ```
 
 *Note : You should wait the blocks sync finished*
 
 ```zsh
-; <<>> DiG 9.14.3 <<>> seed.example.com
+; <<>> DiG 9.14.3 <<>> seed.example.xxx
 ;; global options: +cmd
 ;; Got answer:
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 28250
 ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
 
 ;; QUESTION SECTION:
-;seed.example.com.		IN	A
+;seed.example.xxx.		IN	A
 
 ;; ANSWER SECTION:
-seed.example.com.	1	IN	A	xxx.xxx.xxx.xxx
-seed.example.com.	1	IN	A	xxx.xxx.xxx.xxx
+seed.example.xxx.	1	IN	A	xxx.xxx.xxx.xxx
+seed.example.xxx.	1	IN	A	xxx.xxx.xxx.xxx
 
-;; Query time: 1655 msec
-;; SERVER: xxx.xxx.xxx.xxx#53(xxx.xxx.xxx.xxx)
-;; WHEN: 二  7 02 20:15:04 CST 2019
-;; MSG SIZE  rcvd: 52
 ```
