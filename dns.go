@@ -9,7 +9,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
+	"github.com/Qitmeer/qitmeer-lib/core/protocol"
 )
 
 type DNSServer struct {

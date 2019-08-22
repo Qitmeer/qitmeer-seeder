@@ -7,7 +7,7 @@ import (
 
 	"github.com/jessevdk/go-flags"
 
-	"github.com/HalalChain/qitmeer-lib/params"
+	"github.com/Qitmeer/qitmeer-lib/params"
 )
 
 var defaultListenPort = params.MainNetParams.DefaultPort //"18130"
@@ -27,7 +27,6 @@ type config struct {
 }
 
 func loadConfig() (*config, error) {
-
 	log.SetPrefix("qitmeer-seeder")
 	log.SetFlags(log.Lshortfile | log.Ldate)
 

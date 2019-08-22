@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-
 	"log"
 	"net"
 	"os"
@@ -13,7 +12,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
+	"github.com/Qitmeer/qitmeer-lib/core/protocol"
 )
 
 type Node struct {

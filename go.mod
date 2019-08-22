@@ -1,10 +1,10 @@
-module github.com/HalalChain/qitmeer-seeder
+module github.com/Qitmeer/qitmeer-seeder
 
 go 1.12
 
 require (
-	github.com/HalalChain/qitmeer v0.0.0-20190731141906-88aaab10e1be
-	github.com/HalalChain/qitmeer-lib v0.0.0-20190731141422-52abd17f2811
+	github.com/Qitmeer/qitmeer v0.0.0-20190821055928-66c154fa397d
+	github.com/Qitmeer/qitmeer-lib v0.0.0-20190821055950-6e464cedd380
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/miekg/dns v1.1.15
 )

@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/HalalChain/qitmeer-lib/core/dag"
-	"github.com/HalalChain/qitmeer-lib/core/message"
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
-	"github.com/HalalChain/qitmeer/p2p/peer"
+	"github.com/Qitmeer/qitmeer-lib/core/dag"
+	"github.com/Qitmeer/qitmeer-lib/core/message"
+	"github.com/Qitmeer/qitmeer-lib/core/protocol"
+	"github.com/Qitmeer/qitmeer/p2p/peer"
 )
 
 func creep() {
