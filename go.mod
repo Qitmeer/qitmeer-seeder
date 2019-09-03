@@ -3,8 +3,8 @@ module github.com/Qitmeer/qitmeer-seeder
 go 1.12
 
 require (
-	github.com/Qitmeer/qitmeer v0.0.0-20190821055928-66c154fa397d
-	github.com/Qitmeer/qitmeer-lib v0.0.0-20190821055950-6e464cedd380
+	github.com/Qitmeer/qitmeer v0.0.0-20190903080839-9d3da556fafa
+	github.com/Qitmeer/qitmeer-lib v0.0.0-20190903074414-b198855ea8f1
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/miekg/dns v1.1.15
 )
