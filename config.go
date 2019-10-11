@@ -7,7 +7,7 @@ import (
 
 	"github.com/jessevdk/go-flags"
 
-	"github.com/Qitmeer/qitmeer-lib/params"
+	"github.com/Qitmeer/qitmeer/params"
 )
 
 var defaultListenPort = params.MainNetParams.DefaultPort //"18130"

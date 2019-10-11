@@ -12,7 +12,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/Qitmeer/qitmeer-lib/core/protocol"
+	"github.com/Qitmeer/qitmeer/core/protocol"
 )
 
 type Node struct {

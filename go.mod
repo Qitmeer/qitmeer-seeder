@@ -1,12 +1,10 @@
 module github.com/Qitmeer/qitmeer-seeder
 
-go 1.12
+go 1.13
 
 require (
- 
-	github.com/Qitmeer/qitmeer v0.0.0-20190918052937-be5d6a430adc
-	github.com/Qitmeer/qitmeer-lib v0.0.0-20190918052445-cd0e127262d0
- 
+	github.com/Qitmeer/qitmeer v0.0.0-20191011053011-d4b115502077
+	github.com/fsnotify/fsnotify v1.4.7
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/miekg/dns v1.1.15
 )
@@ -24,7 +22,7 @@ replace (
 	gonum.org/v1/gonum => github.com/gonum/gonum v0.0.0-20190608115022-c5f01565d866
 	gonum.org/v1/netlib => github.com/gonum/netlib v0.0.0-20190313105609-8cb42192e0e0
 	gopkg.in/check.v1 => github.com/go-check/check v0.0.0-20161208181325-20d25e280405
-	gopkg.in/fsnotify.v1 => github.com/fsnotify/fsnotify v1.4.7+incompatible
-	gopkg.in/tomb.v1 => github.com/go-tomb/tomb v1.0.0-20141024135613-dd632973f1e7
+	gopkg.in/fsnotify.v1 => github.com/fsnotify/fsnotify v1.4.2
+	gopkg.in/tomb.v1 => github.com/go-tomb/tomb v0.0.0-20141024135613-dd632973f1e7
 	gopkg.in/yaml.v2 => github.com/go-yaml/yaml v0.0.0-20180328195020-5420a8b6744d
 )

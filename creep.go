@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Qitmeer/qitmeer-lib/core/dag"
-	"github.com/Qitmeer/qitmeer-lib/core/message"
-	"github.com/Qitmeer/qitmeer-lib/core/protocol"
+	"github.com/Qitmeer/qitmeer/core/blockdag"
+	"github.com/Qitmeer/qitmeer/core/message"
+	"github.com/Qitmeer/qitmeer/core/protocol"
 	"github.com/Qitmeer/qitmeer/p2p/peer"
 )
 
@@ -18,8 +18,8 @@ func creep() {
 	onaddr := make(chan struct{})
 	verack := make(chan struct{})
 
-	newestGSFunc := func() (gs *dag.GraphState, err error) {
-		gs = dag.NewGraphState()
+	newestGSFunc := func() (gs *blockdag.GraphState, err error) {
+		gs = blockdag.NewGraphState()
 		gs.GetTips().Add(activeNetParams.GenesisHash)
 		gs.SetTotal(1)
 		return gs, err
