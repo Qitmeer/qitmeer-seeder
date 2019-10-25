@@ -3,7 +3,7 @@ module github.com/Qitmeer/qitmeer-seeder
 go 1.13
 
 require (
-	github.com/Qitmeer/qitmeer v0.0.0-20191011053011-d4b115502077
+	github.com/Qitmeer/qitmeer v0.7.6-0.20191025031709-5a83f1038d95
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/miekg/dns v1.1.15

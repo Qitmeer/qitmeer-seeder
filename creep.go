@@ -9,6 +9,7 @@ import (
 	"github.com/Qitmeer/qitmeer/core/blockdag"
 	"github.com/Qitmeer/qitmeer/core/message"
 	"github.com/Qitmeer/qitmeer/core/protocol"
+	"github.com/Qitmeer/qitmeer/p2p/connmgr"
 	"github.com/Qitmeer/qitmeer/p2p/peer"
 )
 
@@ -90,7 +91,11 @@ func creep() {
 				if err != nil {
 					return
 				}
-				p.AssociateConnection(conn)
+
+				c := connmgr.NewConnReq()
+				c.SetConn(conn)
+
+				p.AssociateConnection(c)
 
 				// Wait for the verack message or timeout in case of
 				// failure.

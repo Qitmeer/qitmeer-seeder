@@ -15,6 +15,7 @@ import (
 	"github.com/Qitmeer/qitmeer/core/protocol"
 )
 
+// Node Peer
 type Node struct {
 	IP          net.IP
 	Services    protocol.ServiceFlag
@@ -23,6 +24,7 @@ type Node struct {
 	LastSeen    time.Time
 }
 
+// Manager node mgr
 type Manager struct {
 	mtx sync.RWMutex
 
@@ -110,6 +112,7 @@ func isRoutable(addr net.IP) bool {
 	return true
 }
 
+// NewManager make mgr
 func NewManager(dataDir string) (*Manager, error) {
 	err := os.MkdirAll(dataDir, 0700)
 	if err != nil {
@@ -138,6 +141,7 @@ func NewManager(dataDir string) (*Manager, error) {
 	return &amgr, nil
 }
 
+// AddAddresses add addresses
 func (m *Manager) AddAddresses(addrs []net.IP) int {
 	var count int
 
@@ -233,6 +237,7 @@ func (m *Manager) GoodAddresses(qtype uint16, services protocol.ServiceFlag) []n
 	return addrs
 }
 
+// Attempt ip exist
 func (m *Manager) Attempt(ip net.IP) {
 	m.mtx.Lock()
 	node, exists := m.nodes[ip.String()]
@@ -242,6 +247,7 @@ func (m *Manager) Attempt(ip net.IP) {
 	m.mtx.Unlock()
 }
 
+// Good add good ip
 func (m *Manager) Good(ip net.IP, services protocol.ServiceFlag) {
 	m.mtx.Lock()
 	node, exists := m.nodes[ip.String()]

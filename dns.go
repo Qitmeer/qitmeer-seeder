@@ -12,12 +12,14 @@ import (
 	"github.com/Qitmeer/qitmeer/core/protocol"
 )
 
+// DNSServer dns server
 type DNSServer struct {
 	hostname   string
 	listen     string
 	nameserver string
 }
 
+// Start start server
 func (d *DNSServer) Start() {
 	defer globalWg.Done()
 
@@ -156,6 +158,7 @@ func (d *DNSServer) Start() {
 	}
 }
 
+// NewDNSServer make DNSServer
 func NewDNSServer(hostname, nameserver, listen string) *DNSServer {
 	if hostname[len(hostname)-1] != '.' {
 		hostname = hostname + "."
