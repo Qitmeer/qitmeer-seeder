@@ -1,5 +1,9 @@
+# IDE
+.vscode
+.DS_Store
+.idea
+
+
 qitmeer-seeder
 vendor
 go.sum
-.DS_Store
-.idea
