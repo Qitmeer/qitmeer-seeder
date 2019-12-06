@@ -10,8 +10,6 @@ import (
 	"github.com/Qitmeer/qitmeer/params"
 )
 
-var defaultListenPort = params.MainNetParams.DefaultPort //"18130"
-
 // Default network parameters
 var activeNetParams = &params.MainNetParams
 
@@ -21,6 +19,7 @@ var defaultHomeDir, _ = os.Getwd()
 type config struct {
 	Host       string `short:"H" long:"host" description:"Seed DNS address"`
 	Listen     string `short:"l" long:"listen"  description:"Listen on address:port"`
+	Port       string `short:"p" long:"port"  description:"Default port"`
 	Nameserver string `short:"n" long:"nameserver" description:"hostname of nameserver"`
 	Seeder     string `short:"s" long:"default seeder" description:"IP address of a  working node"`
 	TestNet    bool   `short:"t" long:"testnet" description:"Use testnet"`
@@ -37,7 +36,7 @@ func loadConfig() (*config, error) {
 
 	// Default config.
 	cfg := config{
-		Listen: normalizeAddress("0.0.0.0", defaultListenPort),
+		Listen: normalizeAddress("0.0.0.0", activeNetParams.DefaultPort),
 	}
 
 	parser := flags.NewParser(&cfg, flags.Default)
@@ -49,6 +48,10 @@ func loadConfig() (*config, error) {
 			parser.WriteHelp(os.Stderr)
 		}
 		return nil, err
+	}
+
+	if cfg.TestNet {
+		activeNetParams = &params.TestNetParams
 	}
 
 	if len(cfg.Host) == 0 {
@@ -65,13 +68,10 @@ func loadConfig() (*config, error) {
 		str := "Please specify a seeder"
 		log.Fatalln(str)
 	}
-
-	cfg.Listen = normalizeAddress(cfg.Listen, defaultListenPort)
-
-	if cfg.TestNet {
-		activeNetParams = &params.TestNetParams
-		defaultListenPort = params.TestNetParams.DefaultPort
+	if len(cfg.Port) > 0 {
+		activeNetParams.DefaultPort = cfg.Port
 	}
+	cfg.Listen = normalizeAddress(cfg.Listen, activeNetParams.DefaultPort)
 
 	return &cfg, err
 }
