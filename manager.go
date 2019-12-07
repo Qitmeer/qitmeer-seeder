@@ -160,6 +160,7 @@ func (m *Manager) AddAddresses(addrs []net.IP) int {
 		node := Node{
 			IP:       addr,
 			LastSeen: time.Now(),
+			Services:protocol.Full,
 		}
 		m.nodes[addrStr] = &node
 		count++
