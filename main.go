@@ -27,7 +27,6 @@ var (
 func main() {
 	cfg, err := loadConfig()
 	if err != nil {
-		log.Println(err.Error())
 		os.Exit(1)
 	}
 	manager, err = NewManager(filepath.Join(defaultHomeDir,

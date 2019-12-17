@@ -22,7 +22,7 @@ Notice:
 
 > --getaddrpercent=100 ,start your Qitmeer with this parameter. 
 
-> The Qitmeer p2p port must use default port (mainnet 830,testnet 1830,see Qitmmer help)
+> The Qitmeer p2p port must use default port (mainnet 8130,testnet 18130,see Qitmmer help)
 
 ```bash
 # start qitmeer
