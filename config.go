@@ -23,6 +23,7 @@ type config struct {
 	Nameserver string `short:"n" long:"nameserver" description:"hostname of nameserver"`
 	Seeder     string `short:"s" long:"default seeder" description:"IP address of a  working node"`
 	TestNet    bool   `short:"t" long:"testnet" description:"Use testnet"`
+	MixNet     bool   `short:"m" long:"mixnet" description:"Use mixnet"`
 }
 
 func loadConfig() (*config, error) {
@@ -52,6 +53,8 @@ func loadConfig() (*config, error) {
 
 	if cfg.TestNet {
 		activeNetParams = &params.TestNetParams
+	} else if cfg.MixNet {
+		activeNetParams = &params.MixNetParams
 	}
 
 	if len(cfg.Host) == 0 {
