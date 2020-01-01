@@ -85,13 +85,17 @@ func (d *DNSServer) Start() {
 				wantedSF = protocol.ServiceFlag(u)
 			}
 
+			var ips []net.IP
+
 			var atype string
 			qtype := dnsMsg.Question[0].Qtype
 			switch qtype {
 			case dns.TypeA:
 				atype = "A"
+				ips = manager.GoodAddressesBuf
 			case dns.TypeAAAA:
 				atype = "AAAA"
+				ips = manager.GoodAddressesBufV6
 			case dns.TypeNS:
 				atype = "NS"
 			default:
@@ -109,7 +113,8 @@ func (d *DNSServer) Start() {
 
 			if qtype != dns.TypeNS {
 				respMsg.Ns = append(respMsg.Ns, authority)
-				ips := manager.GoodAddresses(qtype, wantedSF)
+
+				//ips := manager.GoodAddresses(qtype, wantedSF)
 				for _, ip := range ips {
 					rr = fmt.Sprintf("%s 30 IN %s %s",
 						dnsMsg.Question[0].Name, atype,
@@ -137,7 +142,7 @@ func (d *DNSServer) Start() {
 			}
 
 			for _, vvv := range respMsg.Answer {
-				fmt.Println("respMsg", vvv.String())
+				log.Println("respMsg Answer", vvv.String())
 			}
 
 			//done:

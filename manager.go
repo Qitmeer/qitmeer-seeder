@@ -32,6 +32,9 @@ type Manager struct {
 	wg        sync.WaitGroup
 	quit      chan struct{}
 	peersFile string
+
+	GoodAddressesBuf   []net.IP
+	GoodAddressesBufV6 []net.IP
 }
 
 const (
@@ -138,6 +141,8 @@ func NewManager(dataDir string) (*Manager, error) {
 
 	go amgr.addressHandler()
 
+	go amgr.runGetGoodAddressesBuf()
+
 	return &amgr, nil
 }
 
@@ -160,7 +165,7 @@ func (m *Manager) AddAddresses(addrs []net.IP) int {
 		node := Node{
 			IP:       addr,
 			LastSeen: time.Now(),
-			Services:protocol.Full,
+			Services: protocol.Full,
 		}
 		m.nodes[addrStr] = &node
 		count++
@@ -203,7 +208,7 @@ func (m *Manager) GoodAddresses(qtype uint16, services protocol.ServiceFlag) []n
 		return addrs
 	}
 
-	now := time.Now()
+	// now := time.Now()
 	m.mtx.RLock()
 	for _, node := range m.nodes {
 		if i == 0 {
@@ -216,20 +221,17 @@ func (m *Manager) GoodAddresses(qtype uint16, services protocol.ServiceFlag) []n
 			continue
 		}
 
-		if node.LastSuccess.IsZero() ||
-			now.Sub(node.LastSuccess) > defaultStaleTimeout {
-
-			//test
-			if len(m.nodes) > 5 {
-				continue
-			}
-
-		}
+		// if node.LastSuccess.IsZero() || now.Sub(node.LastSuccess) > defaultStaleTimeout {
+		//test
+		// if len(m.nodes) > 5 {
+		// 	continue
+		// }
+		// }
 
 		// Does the node have the requested services?
-		if node.Services&services != services {
-			continue
-		}
+		// if node.Services&services != services {
+		// 	continue
+		// }
 		addrs = append(addrs, node.IP)
 		i--
 	}
@@ -255,6 +257,15 @@ func (m *Manager) Good(ip net.IP, services protocol.ServiceFlag) {
 	if exists {
 		node.Services = services
 		node.LastSuccess = time.Now()
+	}
+	m.mtx.Unlock()
+}
+
+// Bad  ip
+func (m *Manager) Bad(ip net.IP) {
+	m.mtx.Lock()
+	if _, exists := m.nodes[ip.String()]; exists {
+		delete(m.nodes, ip.String())
 	}
 	m.mtx.Unlock()
 }
@@ -366,5 +377,30 @@ func (m *Manager) savePeers() {
 	if err := os.Rename(tmpfile, m.peersFile); err != nil {
 		log.Printf("Error writing file %s: %v", m.peersFile, err)
 		return
+	}
+}
+
+// runGetGoodAddressesBuf buffer
+func (m *Manager) runGetGoodAddressesBuf() {
+	defer func() {
+		if rev := recover(); rev != nil {
+			log.Println("GoodAddressesBuffer", rev)
+			go m.runGetGoodAddressesBuf()
+		}
+	}()
+
+	m.GoodAddressesBuf = m.GoodAddresses(dns.TypeA, protocol.Full)
+	m.GoodAddressesBufV6 = m.GoodAddresses(dns.TypeAAAA, protocol.Full)
+
+	timeer := time.NewTimer(2 * time.Minute)
+	for {
+		select {
+		case <-timeer.C:
+
+			m.GoodAddressesBuf = m.GoodAddresses(dns.TypeA, protocol.Full)
+			m.GoodAddressesBufV6 = m.GoodAddresses(dns.TypeAAAA, protocol.Full)
+
+			timeer.Reset(2 * time.Minute)
+		}
 	}
 }

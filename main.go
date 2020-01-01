@@ -22,10 +22,12 @@ const (
 var (
 	manager  *Manager
 	globalWg sync.WaitGroup
+	cfg      *config
 )
 
 func main() {
-	cfg, err := loadConfig()
+	var err error
+	cfg, err = loadConfig()
 	if err != nil {
 		log.Println(err.Error())
 		os.Exit(1)
