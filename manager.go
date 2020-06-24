@@ -181,8 +181,8 @@ func (m *Manager) Addresses() []net.IP {
 		if i == 0 {
 			break
 		}
-		if now.Sub(node.LastSuccess) < defaultStaleTimeout ||
-			now.Sub(node.LastAttempt) < defaultStaleTimeout {
+		if (!node.LastSuccess.IsZero() && now.Sub(node.LastSuccess) < defaultStaleTimeout) ||
+			(!node.LastAttempt.IsZero() &&now.Sub(node.LastAttempt) < defaultStaleTimeout) {
 			continue
 		}
 		addrs = append(addrs, node.IP)
